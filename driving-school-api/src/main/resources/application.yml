@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/driving_school?useSSL=false&serverTimezone=America/Santiago
-    username: root # ← tu usuario
-    password: "" # ← tu contraseña
+    url: jdbc:mysql://localhost:3306/driving_school?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=America/Santiago
+    username: drivingschool # ← tu usuario
+    password: drivingschool # ← tu contraseña
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
