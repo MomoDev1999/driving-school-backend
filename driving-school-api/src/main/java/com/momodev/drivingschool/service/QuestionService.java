@@ -24,6 +24,12 @@ public class QuestionService {
     public List<Question> getRandomQuestionsByCategories(int count, List<Integer> categoryIds) {
         List<Question> filtered = repo.findByCategoryIdIn(categoryIds);
         Collections.shuffle(filtered);
+
+        if (filtered.size() < count) {
+            throw new IllegalArgumentException("No hay suficientes preguntas para esa combinación.");
+        }
+
         return filtered.stream().limit(count).toList();
     }
+
 }
