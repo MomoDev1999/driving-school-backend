@@ -1,12 +1,18 @@
 package com.momodev.drivingschool.service;
 
-import com.momodev.drivingschool.domain.*;
-import com.momodev.drivingschool.repository.*;
+import com.momodev.drivingschool.domain.Content;
+import com.momodev.drivingschool.domain.User;
+import com.momodev.drivingschool.domain.UserContent;
+import com.momodev.drivingschool.repository.ContentRepository;
+import com.momodev.drivingschool.repository.UserContentRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ContentService {
@@ -29,16 +35,21 @@ public class ContentService {
     }
 
     public void markContentAsRead(User user, Content content) {
-        UserContent registro = userContentRepo.findAll().stream()
-                .filter(uc -> uc.getUser().getId().equals(user.getId())
-                        && uc.getContent().getId().equals(content.getId()))
-                .findFirst()
-                .orElse(UserContent.builder()
+        Optional<UserContent> optional = userContentRepo.findByUser_IdAndContent_Id(user.getId(), content.getId());
+
+        UserContent registro = optional.orElse(
+                UserContent.builder()
                         .user(user)
                         .content(content)
                         .build());
 
         registro.setReadAt(new Timestamp(System.currentTimeMillis()));
         userContentRepo.save(registro);
+    }
+
+    public Set<Integer> getReadContentIdsByUserId(Integer userId) {
+        return userContentRepo.findByUser_Id(userId).stream()
+                .map(uc -> uc.getContent().getId())
+                .collect(Collectors.toSet());
     }
 }
